@@ -1,0 +1,561 @@
+/**
+ * Lutecia admin screen.
+ * Same identity as the Lutecia site: black ink on white, Helvetica,
+ * hairline rules, one black pill for the primary action, semantic color
+ * only for statuses (green = works, blue = apply, red = blocked).
+ * Everything scoped under .lutecia-wrap: never fight wp-admin globally.
+ */
+
+.lutecia-wrap {
+	--lut-ink: #000;
+	--lut-body: #3f3f46;
+	--lut-muted: #71717a;
+	--lut-faint: #a1a1aa;
+	--lut-rule: #e4e4e7;
+	--lut-rule-soft: #f4f4f5;
+	--lut-ok: #1a7f4b;
+	--lut-ok-bg: #eef6f1;
+	--lut-err: #b4271f;
+	--lut-warn: #8a5a00;
+	max-width: 1080px;
+	color: var(--lut-body);
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.lutecia-wrap h1.lutecia-title {
+	font-family: inherit;
+	font-size: 28px;
+	font-weight: 500;
+	letter-spacing: -0.03em;
+	line-height: 1.1;
+	color: var(--lut-ink);
+	padding: 12px 0 0;
+	margin: 0;
+}
+.lutecia-subtitle {
+	color: var(--lut-muted);
+	font-size: 14px;
+	margin: 6px 0 20px;
+}
+
+/* --- Stepper ------------------------------------------------------------ */
+
+.lutecia-steps {
+	display: flex;
+	gap: 32px;
+	list-style: none;
+	margin: 4px 0 8px;
+	padding: 0;
+	font-size: 13px;
+	color: var(--lut-faint);
+}
+.lutecia-steps li {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	margin: 0;
+	line-height: 1;
+}
+.lutecia-steps li::before {
+	content: attr(data-step);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 19px;
+	height: 19px;
+	border: 1px solid var(--lut-rule);
+	border-radius: 50%;
+	font-size: 11px;
+	line-height: 1;
+	color: var(--lut-faint);
+	flex: none;
+	box-sizing: border-box;
+}
+.lutecia-wrap[data-lutecia-step="1"] .lutecia-steps li[data-step="1"],
+.lutecia-wrap[data-lutecia-step="2"] .lutecia-steps li[data-step="2"],
+.lutecia-wrap[data-lutecia-step="3"] .lutecia-steps li[data-step="3"] {
+	color: var(--lut-ink);
+	font-weight: 500;
+}
+.lutecia-wrap[data-lutecia-step="1"] .lutecia-steps li[data-step="1"]::before,
+.lutecia-wrap[data-lutecia-step="2"] .lutecia-steps li[data-step="2"]::before,
+.lutecia-wrap[data-lutecia-step="3"] .lutecia-steps li[data-step="3"]::before {
+	background: var(--lut-ink);
+	border-color: var(--lut-ink);
+	color: #fff;
+}
+.lutecia-wrap[data-lutecia-step="2"] .lutecia-steps li[data-step="1"]::before,
+.lutecia-wrap[data-lutecia-step="3"] .lutecia-steps li[data-step="1"]::before,
+.lutecia-wrap[data-lutecia-step="3"] .lutecia-steps li[data-step="2"]::before {
+	content: "\2713";
+	border-color: var(--lut-ok);
+	color: var(--lut-ok);
+}
+
+/* --- Cards -------------------------------------------------------------- */
+
+.lutecia-card {
+	background: #fff;
+	border: 1px solid var(--lut-rule);
+	border-radius: 8px;
+	padding: 28px 32px;
+	margin-top: 20px;
+}
+.lutecia-card h2 {
+	margin-top: 0;
+	font-family: inherit;
+	font-weight: 500;
+	letter-spacing: -0.02em;
+	color: var(--lut-ink);
+}
+.lutecia-card h3 {
+	margin: 0 0 4px;
+	font-size: 12px;
+	font-weight: 500;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--lut-muted);
+}
+
+.lutecia-hero p { color: var(--lut-body); }
+.lutecia-terms {
+	display: flex;
+	align-items: baseline;
+	gap: 9px;
+	margin: 14px 0 4px;
+	font-size: 13px;
+	color: var(--lut-body);
+	cursor: pointer;
+	max-width: 560px;
+}
+.lutecia-terms input[type="checkbox"] {
+	flex: none;
+	transform: translateY(2px);
+}
+.lutecia-bullets { list-style: disc; padding-left: 20px; color: var(--lut-body); }
+.lutecia-consent { max-width: 560px; font-size: 12px; }
+
+/* --- Primary pill / secondary ghost ------------------------------------- */
+
+.lutecia-wrap .lutecia-pill,
+.lutecia-wrap .lutecia-pill:focus {
+	display: inline-flex;
+	align-items: center;
+	gap: 11px;
+	margin-top: 8px;
+	padding: 10px 22px;
+	background: var(--lut-ink);
+	border: 1px solid var(--lut-ink);
+	color: #fff;
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	line-height: 1.4;
+	border-radius: 999px;
+	box-shadow: none;
+	text-shadow: none;
+	cursor: pointer;
+	transition: background 0.2s ease, transform 0.2s ease;
+}
+.lutecia-wrap .lutecia-pill .lutecia-arrow {
+	display: inline-block;
+	transition: transform 0.2s ease;
+}
+.lutecia-wrap .lutecia-pill:hover {
+	background: #27272a;
+	border-color: #27272a;
+	color: #fff;
+	transform: translateY(-1px);
+}
+.lutecia-wrap .lutecia-pill:hover .lutecia-arrow { transform: translateX(3px); }
+.lutecia-wrap .lutecia-pill:active { transform: translateY(0) scale(0.98); }
+.lutecia-wrap .lutecia-pill:focus-visible {
+	outline: 2px solid var(--lut-ink);
+	outline-offset: 3px;
+}
+.lutecia-wrap .lutecia-pill:disabled {
+	background: var(--lut-faint);
+	border-color: var(--lut-faint);
+	color: #fff;
+	transform: none;
+	cursor: progress;
+}
+
+.lutecia-wrap .lutecia-ghost {
+	background: transparent;
+	border: 1px solid var(--lut-rule);
+	color: var(--lut-muted);
+	font-family: inherit;
+	font-size: 13px;
+	padding: 7px 16px;
+	border-radius: 999px;
+	cursor: pointer;
+	transition: color 0.15s ease, border-color 0.15s ease;
+}
+.lutecia-wrap .lutecia-ghost:hover {
+	color: var(--lut-ink);
+	border-color: var(--lut-ink);
+	background: transparent;
+}
+.lutecia-wrap .lutecia-ghost:focus-visible {
+	outline: 2px solid var(--lut-ink);
+	outline-offset: 3px;
+}
+
+/* --- Syncing step ------------------------------------------------------- */
+
+.lutecia-sync-row {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	margin: 6px 0 2px;
+}
+/* Four dots that turn and breathe while the catalog is read. */
+.lutecia-spinner {
+	position: relative;
+	width: 22px;
+	height: 22px;
+	flex: none;
+	animation: lutecia-spin 2s linear infinite;
+}
+.lutecia-spinner i {
+	position: absolute;
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	background: var(--lut-ink);
+}
+.lutecia-spinner i:nth-child(1) { top: 0; left: 0; }
+.lutecia-spinner i:nth-child(2) { top: 0; right: 0; }
+.lutecia-spinner i:nth-child(3) { bottom: 0; left: 0; }
+.lutecia-spinner i:nth-child(4) { bottom: 0; right: 0; }
+@keyframes lutecia-spin {
+	0% { transform: scale(1) rotate(0); }
+	20%, 25% { transform: scale(1.25) rotate(90deg); }
+	45%, 50% { transform: scale(1) rotate(180deg); }
+	70%, 75% { transform: scale(1.25) rotate(270deg); }
+	95%, 100% { transform: scale(1) rotate(360deg); }
+}
+.lutecia-sync-title {
+	font-size: 15px;
+	font-weight: 500;
+	color: var(--lut-ink);
+	margin: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+	.lutecia-spinner { animation: none; }
+	.lutecia-badge-checking { animation: none; }
+}
+
+/* --- Grid / status ------------------------------------------------------ */
+
+.lutecia-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 20px;
+}
+.lutecia-grid .lutecia-card { margin-top: 20px; }
+
+.lutecia-status {
+	display: flex;
+	align-items: baseline;
+	gap: 7px;
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1.4;
+	margin: 2px 0 6px;
+}
+.lutecia-ok { color: var(--lut-ok); }
+.lutecia-ok::before { content: "\2713"; }
+
+.lutecia-muted { color: var(--lut-muted); }
+.lutecia-small { font-size: 12px; margin: 16px 0 0; }
+.lutecia-error { color: var(--lut-err); font-weight: 500; }
+
+.lutecia-wrap a {
+	color: var(--lut-ink);
+	text-decoration: underline;
+	text-decoration-color: #c9c9c9;
+	text-underline-offset: 3px;
+}
+.lutecia-wrap a:hover { text-decoration-color: var(--lut-ink); }
+.lutecia-wrap a:focus-visible {
+	outline: 2px solid var(--lut-ink);
+	outline-offset: 3px;
+}
+
+/* --- Channel rows ------------------------------------------------------- */
+
+.lutecia-row {
+	padding: 22px 0;
+	border-top: 1px solid var(--lut-rule-soft);
+}
+.lutecia-row:first-of-type { border-top: 0; padding-top: 4px; }
+.lutecia-row p { margin: 8px 0 0; max-width: 720px; }
+
+.lutecia-row-head {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+	font-size: 14px;
+}
+.lutecia-row-head strong { color: var(--lut-ink); font-weight: 500; }
+
+.lutecia-badge {
+	display: inline-block;
+	padding: 1px 9px;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 500;
+	line-height: 1.8;
+}
+.lutecia-badge-live { background: var(--lut-ok-bg); color: var(--lut-ok); }
+.lutecia-badge-checking {
+	background: var(--lut-rule-soft);
+	color: var(--lut-muted);
+	animation: lutecia-pulse 1.4s ease-in-out infinite;
+}
+@keyframes lutecia-pulse {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.45; }
+}
+
+.lutecia-row-links { font-size: 13px; }
+.lutecia-row-links a { margin-right: 16px; }
+
+.lutecia-access { margin-top: 12px; }
+.lutecia-row-foot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	flex-wrap: wrap;
+}
+
+/* Per-channel journey: Apply -> I've been accepted -> We deliver.
+   Same visual grammar as the top stepper, miniaturized. */
+.lutecia-track {
+	list-style: none;
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	margin: 0;
+	padding: 0;
+	font-size: 12.5px;
+}
+.lutecia-track-step {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	margin: 0;
+	color: var(--lut-faint);
+	white-space: nowrap;
+}
+.lutecia-track-step::before {
+	content: "";
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: var(--lut-rule);
+	flex: none;
+}
+.lutecia-track-step[data-track="apply"] { color: var(--lut-ink); }
+.lutecia-track-step[data-track="apply"]::before { background: var(--lut-ink); }
+.lutecia-track-step a {
+	color: inherit;
+	text-decoration: underline;
+	text-decoration-color: #c9c9c9;
+	text-underline-offset: 3px;
+}
+.lutecia-track-step a:hover { text-decoration-color: var(--lut-ink); }
+.lutecia-wrap .lutecia-linklike {
+	background: none;
+	border: 0;
+	padding: 0;
+	margin: 0;
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+	text-decoration: underline;
+	text-decoration-style: dotted;
+	text-underline-offset: 3px;
+}
+.lutecia-wrap .lutecia-linklike:hover { color: var(--lut-ink); }
+.lutecia-wrap .lutecia-linklike:focus-visible {
+	outline: 2px solid var(--lut-ink);
+	outline-offset: 2px;
+}
+/* Received: first two steps check off, delivery becomes the active step */
+.is-received .lutecia-track-step[data-track="apply"],
+.is-received .lutecia-track-step[data-track="accepted"] { color: var(--lut-ok); }
+.is-received .lutecia-track-step[data-track="apply"]::before,
+.is-received .lutecia-track-step[data-track="accepted"]::before {
+	content: "\2713";
+	width: auto;
+	height: auto;
+	background: none;
+	color: var(--lut-ok);
+	font-size: 11px;
+	line-height: 1;
+}
+.is-received .lutecia-track-step[data-track="deliver"] {
+	color: var(--lut-ink);
+	font-weight: 500;
+}
+.is-received .lutecia-track-step[data-track="deliver"]::before { background: var(--lut-ink); }
+.is-received .lutecia-track-step a { pointer-events: none; text-decoration: none; }
+.is-received .lutecia-track-step [data-lutecia-accepted] {
+	pointer-events: none;
+	text-decoration: none;
+	cursor: default;
+}
+.lutecia-card-intro { margin: 0 0 6px; max-width: 720px; }
+.lutecia-warn-text { color: var(--lut-warn); max-width: 640px; }
+.lutecia-data-row {
+	padding: 16px 0 14px;
+	border-top: 1px solid var(--lut-rule-soft);
+}
+.lutecia-data-row:last-child { padding-bottom: 0; }
+.lutecia-data-head {
+	display: flex;
+	align-items: baseline;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+.lutecia-data-head strong { color: var(--lut-ink); font-weight: 500; }
+.lutecia-data-status { font-size: 12.5px; font-weight: 500; }
+.lutecia-data-status.is-missing { color: var(--lut-warn); }
+.lutecia-data-status.is-ok { color: var(--lut-ok); }
+.lutecia-data-status.is-ok::before { content: "\2713 "; }
+.lutecia-data-row p { margin: 6px 0 0; max-width: 720px; font-size: 13px; }
+.lutecia-received {
+	margin: 8px 0 0;
+	font-size: 13px;
+	color: var(--lut-ok);
+}
+.lutecia-received::before { content: "\2713 "; }
+.lutecia-received .lutecia-linklike {
+	color: var(--lut-muted);
+	font-size: 12px;
+	margin-left: 6px;
+}
+.lutecia-wrap .lutecia-ghost-small {
+	font-size: 12px;
+	padding: 5px 13px;
+	margin-top: 8px;
+}
+.lutecia-wrap .lutecia-pill-small {
+	font-size: 12px;
+	padding: 6px 15px;
+	margin-top: 0;
+}
+.lutecia-access-form { margin-top: 10px; max-width: 640px; }
+.lutecia-access-form label { display: block; }
+.lutecia-access-form textarea {
+	display: block;
+	width: 100%;
+	margin-top: 6px;
+	border: 1px solid var(--lut-rule);
+	border-radius: 6px;
+	padding: 8px 10px;
+	font-family: inherit;
+	font-size: 13px;
+	color: var(--lut-body);
+	box-sizing: border-box;
+}
+.lutecia-access-form textarea:focus {
+	border-color: var(--lut-ink);
+	box-shadow: none;
+	outline: none;
+}
+.lutecia-access-actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-top: 10px;
+}
+.lutecia-access-actions .lutecia-ghost-small { margin-top: 0; }
+
+
+/* --- Controls (switches) ------------------------------------------------ */
+
+.lutecia-channel {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 24px;
+	padding: 18px 0;
+	border-top: 1px solid var(--lut-rule-soft);
+	cursor: pointer;
+}
+.lutecia-channel:first-of-type { border-top: 0; padding-top: 4px; }
+.lutecia-channel-text { display: flex; flex-direction: column; gap: 3px; max-width: 720px; }
+.lutecia-channel-text strong { color: var(--lut-ink); font-weight: 500; }
+.lutecia-channel-text .lutecia-muted { font-size: 13px; }
+
+.lutecia-channel input[type="checkbox"] {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 44px;
+	height: 24px;
+	margin: 0;
+	border: 1px solid #c6c6c6;
+	background: #e9e9ea;
+	border-radius: 12px;
+	position: relative;
+	cursor: pointer;
+	transition: background 0.18s ease, border-color 0.18s ease;
+	flex: none;
+}
+.lutecia-channel input[type="checkbox"]:hover { border-color: #9b9b9b; }
+.lutecia-channel input[type="checkbox"]:focus-visible {
+	outline: 2px solid var(--lut-ink);
+	outline-offset: 2px;
+}
+.lutecia-channel input[type="checkbox"]:checked {
+	background: var(--lut-ink);
+	border-color: var(--lut-ink);
+}
+/* wp-admin injects a dashicon into checked checkboxes' ::before and
+   shifts it with float/negative margins; declare the knob at higher
+   specificity for both states so the core rule never applies. */
+.lutecia-wrap .lutecia-channel input[type="checkbox"]::before,
+.lutecia-wrap .lutecia-channel input[type="checkbox"]:checked::before {
+	content: "";
+	float: none;
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 18px;
+	height: 18px;
+	background: #fff;
+	border-radius: 50%;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	transition: left 0.18s ease;
+}
+.lutecia-wrap .lutecia-channel input[type="checkbox"]::before { left: 2px; }
+.lutecia-wrap .lutecia-channel input[type="checkbox"]:checked::before { left: 22px; }
+.lutecia-channel input[type="checkbox"]:disabled { opacity: 0.45; cursor: progress; }
+
+.lutecia-footer-actions {
+	margin-top: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+.lutecia-contact a { color: var(--lut-muted); }
+.lutecia-contact a:hover { color: var(--lut-ink); }
+
+/* Agency code on the connect screen: hidden behind a link, agencies know they have one. */
+.lutecia-agency-toggle { margin: 4px 0 12px; }
+.lutecia-linkbtn { background: none; border: 0; padding: 0; font: inherit; font-size: 13px; color: var(--lut-muted, #646970); text-decoration: underline; cursor: pointer; }
+.lutecia-linkbtn:hover { color: var(--lut-ink, #1d2327); }
+.lutecia-agency-set { margin: 4px 0 12px; }
+.lutecia-agency { display: block; margin: 0 0 16px; max-width: 320px; }
+.lutecia-agency[hidden] { display: none; }
+.lutecia-agency span { display: block; font-size: 12px; color: var(--lut-muted, #646970); margin-bottom: 4px; }
+.lutecia-agency input { width: 100%; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.04em; text-transform: uppercase; }

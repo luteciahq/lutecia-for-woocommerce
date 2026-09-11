@@ -1,0 +1,7 @@
+/.wordpress-org
+/.git
+/.github
+.distignore
+.gitignore
+README.md
+LICENSE

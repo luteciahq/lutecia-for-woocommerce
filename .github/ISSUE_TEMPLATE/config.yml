@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Support
+    url: https://wordpress.org/support/plugin/lutecia-for-woocommerce/
+    about: Questions about installing, connecting or using the plugin go to the wordpress.org forum.
+  - name: Contact Lutecia
+    url: https://lutecia.app
+    about: Anything about the Lutecia service itself.
