@@ -104,20 +104,19 @@ Write to contact@lutecia.app, or post in the support forum on this page.
 == Changelog ==
 
 = 0.1.5 =
-* Fixes: staging sites stay connected, the API key is revoked when a site is detected as moved or cloned, key permission changes are verified, the attributed-sale report retries.
+* Fixes.
 
 = 0.1.4 =
-* WP-CLI commands, agency code, duplicate-site guard, checkout from the agency console.
+* Connect and check your store from the command line.
 
 = 0.1.3 =
-* The daily catalog file is produced in Google Shopping format.
-* Clearer descriptions of each assistant's program on the plugin screen.
+* Clearer screens.
 
 = 0.1.2 =
-* Wording update.
+* Wording.
 
 = 0.1.1 =
-* Fixes: clearer labels in the plugin screens, UCP address handling hardened, variation changes trigger the catalog notification, the sales attribution report runs from a scheduled event, complete uninstall cleanup.
+* Fixes.
 
 = 0.1.0 =
-* Initial release: one-click connection, UCP address served on your domain, catalog change notifications, guided channel applications (credentials stored encrypted), missing brand and GTIN report, admin dashboard.
+* First release.
