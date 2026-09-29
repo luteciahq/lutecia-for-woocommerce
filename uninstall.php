@@ -49,6 +49,9 @@ delete_option( 'lutecia_site_url' );
 delete_option( 'lutecia_site_env' );
 delete_option( 'lutecia_duplicate_site' );
 delete_option( 'lutecia_terms_accepted' );
+delete_option( 'lutecia_stripe_write_since' );
+delete_option( 'lutecia_wizard_step' );
+delete_option( 'lutecia_wizard_assistants_done' );
 
 wp_clear_scheduled_hook( 'lutecia_notify_hub' );
 wp_unschedule_hook( 'lutecia_report_conversion' );

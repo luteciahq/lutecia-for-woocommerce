@@ -115,6 +115,7 @@ class Site_Guard {
 		delete_option( self::OPT_SITE_URL );
 		delete_option( self::OPT_SITE_ENV );
 		delete_option( self::OPT_DUPLICATE_SITE );
+		Wizard::forget();
 		Discovery::flush_cache();
 	}
 

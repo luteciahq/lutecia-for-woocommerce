@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:       Lutecia for WooCommerce
+ * Plugin Name:       Lutecia: Agentic Commerce for WooCommerce
  * Plugin URI:        https://wordpress.org/plugins/lutecia-for-woocommerce/
- * Description:       Let AI agents shop your store. Lutecia connects your WooCommerce store to AI shopping assistants, so they can place the order in it.
- * Version:           0.1.5
+ * Description:       End-to-end agentic commerce infrastructure for online stores. AI agents can find your products, build a cart and place the order in your store.
+ * Version:           0.2.0
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Requires Plugins:  woocommerce
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'LUTECIA_WC_VERSION', '0.1.5' );
+define( 'LUTECIA_WC_VERSION', '0.2.0' );
 define( 'LUTECIA_WC_FILE', __FILE__ );
 define( 'LUTECIA_WC_DIR', plugin_dir_path( __FILE__ ) );
 define( 'LUTECIA_WC_URL', plugin_dir_url( __FILE__ ) );

@@ -123,7 +123,7 @@ class CLI {
 			\WP_CLI::success( 'Not connected.' );
 			return;
 		}
-		\WP_CLI::confirm( 'Disconnect this store from AI shopping assistants?', $assoc );
+		\WP_CLI::confirm( 'Disconnect this store from AI agents?', $assoc );
 		$connection->disconnect();
 		\WP_CLI::success( 'Disconnected.' );
 	}

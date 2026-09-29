@@ -1,0 +1,315 @@
+/**
+ * Lutecia screen in the WooCommerce admin: Welcome, Setup, Home.
+ * Light theme only. Every colour is a token of the first rule: a dark
+ * theme later redefines that rule under one selector and nothing else.
+ * Scoped under .lutecia-wrap, classes prefixed lutecia-: never fight
+ * wp-admin globally. Fonts are the WordPress admin's system fonts:
+ * nothing is loaded from outside.
+ */
+.lutecia-wrap {
+	--lt-panel: #ffffff;
+	--lt-ground: #f6f7f9;
+	--lt-ink: #111318;
+	--lt-text: #2a2e37;
+	--lt-muted: #5f6673;
+	--lt-line: #e3e6eb;
+	--lt-soft: #f2f4f7;
+	--lt-primary: #111318;
+	--lt-primary-ink: #ffffff;
+	--lt-primary-hover: #2b2f38;
+	--lt-ok: #137a3a;
+	--lt-ok-bg: #e6f6ec;
+	--lt-on-ok: #ffffff;
+	--lt-err: #b42318;
+	--lt-warn: #8a5a00;
+	--lt-warn-bg: #fff4d6;
+	--lt-idle: #cfd4db;
+	--lt-ok-dot: #16a34a;
+	--lt-ok-ring: #dcfce7;
+	--lt-warn-dot: #f59e0b;
+	--lt-warn-ring: #fef3c7;
+	--lt-stripe: #635bff;
+	--lt-stripe-hover: #5851e6;
+	--lt-on-stripe: #ffffff;
+	--lt-stripe-ring: rgba(99, 91, 255, 0.18);
+	--lt-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	--lt-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	color: var(--lt-ink);
+	font-family: var(--lt-sans);
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.lutecia-wrap [hidden] { display: none !important; }
+.lutecia-wrap *, .lutecia-wrap *::before, .lutecia-wrap *::after { box-sizing: border-box; }
+
+/* The sheet is the whole admin area: no window in the middle of the page. */
+.lutecia-wrap.wrap { margin: 0 0 0 -20px; }
+@media (max-width: 782px) { .lutecia-wrap.wrap { margin-left: -10px; } }
+.lutecia-sheet {
+	display: flex;
+	flex-direction: column;
+	min-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
+	background: var(--lt-ground);
+	overflow: clip;
+}
+.lutecia-screen { flex: 1; display: flex; flex-direction: column; }
+
+.lutecia-sr {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* --- Type ------------------------------------------------------------- */
+
+.lutecia-wrap h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.25; margin: 0 0 6px; color: var(--lt-ink); }
+.lutecia-wrap h2:focus { outline: none; }
+.lutecia-wrap h3 { font-size: 14px; font-weight: 600; margin: 0; color: var(--lt-ink); }
+.lutecia-wrap p { margin: 0; font-size: 14px; color: var(--lt-text); }
+.lutecia-wrap .lutecia-muted { color: var(--lt-muted); }
+.lutecia-wrap .lutecia-small { font-size: 12px; }
+.lutecia-wrap .lutecia-lede { color: var(--lt-muted); margin: 0 0 22px; }
+.lutecia-wrap .lutecia-agents { color: var(--lt-ink); font-weight: 500; margin: 0 0 22px; }
+.lutecia-wrap code { font-family: var(--lt-mono); font-size: 12px; background: var(--lt-soft); padding: 1px 4px; border-radius: 4px; }
+.lutecia-wrap .lutecia-error { color: var(--lt-err); font-size: 13px; margin-top: 10px; }
+.lutecia-wrap .lutecia-warn { color: var(--lt-warn); font-size: 13px; margin-top: 10px; }
+
+/* --- Actions ---------------------------------------------------------- */
+
+.lutecia-wrap .lutecia-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	border: 1px solid var(--lt-primary);
+	background: var(--lt-primary);
+	color: var(--lt-primary-ink);
+	font: 500 14px/20px var(--lt-sans);
+	padding: 9px 18px;
+	border-radius: 8px;
+	cursor: pointer;
+	text-decoration: none;
+	transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+.lutecia-wrap .lutecia-btn:hover, .lutecia-wrap .lutecia-btn:focus { color: var(--lt-primary-ink); background: var(--lt-primary-hover); border-color: var(--lt-primary-hover); }
+.lutecia-wrap .lutecia-btn:active { transform: translateY(1px); }
+@media (prefers-reduced-motion: reduce) { .lutecia-wrap .lutecia-btn { transition: none; } .lutecia-wrap .lutecia-btn:active { transform: none; } }
+.lutecia-wrap .lutecia-btn-small { padding: 7px 14px; font-size: 13px; }
+.lutecia-wrap .lutecia-btn-stripe { background: var(--lt-stripe); border-color: var(--lt-stripe); color: var(--lt-on-stripe); }
+.lutecia-wrap .lutecia-btn-stripe:hover, .lutecia-wrap .lutecia-btn-stripe:focus { background: var(--lt-stripe-hover); border-color: var(--lt-stripe-hover); color: var(--lt-on-stripe); }
+.lutecia-wrap .lutecia-btn-ghost { background: transparent; color: var(--lt-ink); border-color: var(--lt-line); }
+.lutecia-wrap .lutecia-btn-ghost:hover, .lutecia-wrap .lutecia-btn-ghost:focus { background: var(--lt-soft); color: var(--lt-ink); border-color: var(--lt-line); }
+.lutecia-wrap .lutecia-btn-danger { background: var(--lt-err); border-color: var(--lt-err); }
+.lutecia-wrap .lutecia-btn-danger:hover, .lutecia-wrap .lutecia-btn-danger:focus { background: var(--lt-err); border-color: var(--lt-err); color: var(--lt-primary-ink); }
+.lutecia-wrap .lutecia-btn[disabled] { opacity: 0.5; cursor: default; }
+.lutecia-wrap .lutecia-link {
+	color: var(--lt-ink);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	text-decoration-color: var(--lt-line);
+	cursor: pointer;
+	background: none;
+	border: 0;
+	font: inherit;
+	padding: 0;
+}
+.lutecia-wrap .lutecia-link[disabled] { color: var(--lt-muted); cursor: default; }
+.lutecia-wrap .lutecia-stripe-link { color: var(--lt-stripe); font-weight: 500; font-size: 13px; text-decoration: none; white-space: nowrap; }
+.lutecia-wrap .lutecia-stripe-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.lutecia-wrap .lutecia-btn:focus-visible,
+.lutecia-wrap .lutecia-link:focus-visible,
+.lutecia-wrap .lutecia-stripe-link:focus-visible,
+.lutecia-wrap .lutecia-chip:focus-visible,
+.lutecia-wrap .lutecia-switch:focus-visible,
+.lutecia-wrap .lutecia-rail-steps button:focus-visible,
+.lutecia-wrap .lutecia-nav a:focus-visible,
+.lutecia-wrap .lutecia-unfold:focus-visible,
+.lutecia-wrap summary:focus-visible {
+	outline: 2px solid var(--lt-stripe);
+	outline-offset: 2px;
+	box-shadow: none;
+}
+
+/* --- Statuses --------------------------------------------------------- */
+
+.lutecia-wrap .lutecia-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font: 500 12px/1.5 var(--lt-sans);
+	padding: 3px 10px;
+	border-radius: 999px;
+	background: var(--lt-soft);
+	color: var(--lt-muted);
+	border: 1px solid var(--lt-line);
+	white-space: nowrap;
+}
+.lutecia-wrap .lutecia-chip.is-ok { background: var(--lt-ok-bg); color: var(--lt-ok); border-color: transparent; }
+.lutecia-wrap .lutecia-chip.is-warn { background: var(--lt-warn-bg); color: var(--lt-warn); border-color: transparent; text-decoration: none; cursor: pointer; }
+.lutecia-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--lt-idle); flex: none; }
+.lutecia-dot.is-ok { background: var(--lt-ok-dot); box-shadow: 0 0 0 3px var(--lt-ok-ring); }
+.lutecia-dot.is-warn { background: var(--lt-warn-dot); box-shadow: 0 0 0 3px var(--lt-warn-ring); }
+
+/* --- Welcome ---------------------------------------------------------- */
+
+.lutecia-welcome { flex: 1; display: flex; flex-direction: column; text-align: center; }
+.lutecia-welcome-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 64px 48px 32px; }
+.lutecia-welcome[data-lutecia-welcome="duplicate"] { justify-content: center; align-items: center; padding: 64px 48px; max-width: 620px; margin: 0 auto; }
+.lutecia-wrap .lutecia-welcome .lutecia-display { font-size: 32px; letter-spacing: -0.02em; margin-bottom: 32px; text-wrap: balance; max-width: 620px; }
+.lutecia-wrap .lutecia-welcome-body .lutecia-btn { font-size: 15px; padding: 12px 24px; }
+.lutecia-wrap .lutecia-welcome p { margin-top: 12px; }
+.lutecia-wrap .lutecia-welcome-body > p:first-of-type { margin-top: 0; }
+.lutecia-wrap .lutecia-consent { font-size: 13px; color: var(--lt-muted); margin-top: 16px; }
+.lutecia-wrap .lutecia-consent a { color: inherit; }
+.lutecia-agency { display: flex; flex-direction: column; gap: 6px; width: 280px; max-width: 100%; margin: 20px auto 0; text-align: left; }
+.lutecia-wrap .lutecia-agency input { width: 100%; font: 14px var(--lt-sans); border: 1px solid var(--lt-line); border-radius: 8px; padding: 8px 10px; background: var(--lt-panel); color: var(--lt-ink); box-shadow: none; }
+.lutecia-welcome-foot { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 8px 32px; padding: 20px 48px 24px; border-top: 1px solid var(--lt-line); font-size: 13px; }
+.lutecia-wrap .lutecia-welcome-foot .lutecia-link { color: var(--lt-muted); }
+.lutecia-wrap .lutecia-welcome-foot .lutecia-link:hover { color: var(--lt-ink); }
+.lutecia-wrap .lutecia-welcome-foot p { margin: 0; font-size: 13px; }
+.lutecia-disclosure { font-size: 13px; color: var(--lt-muted); max-width: 520px; }
+.lutecia-disclosure[open] { flex-basis: 100%; }
+.lutecia-disclosure summary { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--lt-line); list-style: none; }
+.lutecia-disclosure summary::-webkit-details-marker { display: none; }
+.lutecia-disclosure summary:hover { color: var(--lt-ink); }
+.lutecia-wrap .lutecia-disclosure p { margin-top: 8px; font-size: 12px; color: var(--lt-muted); }
+
+/* --- In-page confirmation and notices ---------------------------------- */
+
+.lutecia-confirm { flex-basis: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--lt-line); }
+.lutecia-wrap .lutecia-confirm p { margin: 0; color: var(--lt-ink); }
+.lutecia-confirm-actions { display: flex; gap: 8px; flex: none; }
+.lutecia-wrap .lutecia-notice { flex-basis: 100%; margin-top: 8px; }
+
+/* --- Setup ------------------------------------------------------------ */
+
+.lutecia-setup { flex: 1; display: grid; grid-template-columns: 248px 1fr; }
+.lutecia-rail { border-right: 1px solid var(--lt-line); padding: 36px 16px; background: var(--lt-panel); display: flex; flex-direction: column; }
+.lutecia-brand { font-weight: 600; font-size: 15px; line-height: 28px; margin-bottom: 24px; letter-spacing: -0.01em; padding-left: 10px; color: var(--lt-ink); }
+.lutecia-rail-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.lutecia-rail-steps li { margin: 0; }
+.lutecia-wrap .lutecia-rail-steps button {
+	display: grid;
+	grid-template-columns: 26px 1fr;
+	gap: 12px;
+	align-items: center;
+	padding: 10px;
+	border-radius: 8px;
+	color: var(--lt-muted);
+	font: 500 14px var(--lt-sans);
+	background: none;
+	border: 0;
+	width: 100%;
+	text-align: left;
+	cursor: pointer;
+}
+.lutecia-wrap .lutecia-rail-steps button[disabled] { cursor: default; }
+.lutecia-wrap .lutecia-rail-steps li.is-done button { color: var(--lt-ink); }
+.lutecia-wrap .lutecia-rail-steps li.is-current button { background: var(--lt-soft); color: var(--lt-ink); }
+.lutecia-rail-n { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--lt-idle); display: grid; place-items: center; font-size: 12px; font-weight: 600; color: var(--lt-muted); background: var(--lt-panel); }
+.lutecia-rail-steps li.is-current .lutecia-rail-n { border-color: var(--lt-ink); color: var(--lt-ink); }
+.lutecia-rail-steps li.is-done .lutecia-rail-n { background: var(--lt-ok-dot); border-color: var(--lt-ok-dot); color: var(--lt-on-ok); }
+.lutecia-rail-steps li.is-done .lutecia-rail-n::after { content: "\2713"; font-size: 12px; }
+.lutecia-rail-steps li.is-done .lutecia-rail-n span { display: none; }
+.lutecia-stage { padding: 36px 40px 36px; display: flex; flex-direction: column; max-width: 800px; }
+.lutecia-stage-body { flex: 1; }
+.lutecia-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 24px; margin-top: 28px; border-top: 1px solid var(--lt-line); }
+.lutecia-actions-right, .lutecia-actions-left { display: flex; gap: 20px; align-items: center; }
+.lutecia-sync { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.lutecia-actions-right .lutecia-sync { margin: 0; gap: 8px; }
+.lutecia-actions-right .lutecia-spinner { width: 14px; height: 14px; }
+.lutecia-spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--lt-idle); border-top-color: var(--lt-ink); animation: lutecia-spin 0.8s linear infinite; flex: none; }
+@keyframes lutecia-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .lutecia-spinner { animation: none; } .lutecia-switch::after { transition: none; } }
+.lutecia-wrap .lutecia-path { font-size: 13px; color: var(--lt-text); margin-top: 12px; }
+.lutecia-path b { color: var(--lt-ink); font-weight: 500; }
+
+/* --- Stripe blocks ---------------------------------------------------- */
+
+/* Agents step: two rows, a name with the path under it, the Stripe button at the right. */
+.lutecia-todo-steps { margin-top: 16px; }
+.lutecia-row-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.lutecia-wrap .lutecia-row-text .lutecia-path { margin-top: 0; }
+.lutecia-blk { border: 1px solid var(--lt-line); border-radius: 12px; background: var(--lt-panel); padding: 16px 20px; margin-top: 16px; }
+.lutecia-blk + .lutecia-blk { margin-top: 12px; }
+.lutecia-blk-head { display: flex; align-items: center; gap: 12px; }
+.lutecia-blk-head h3 { flex: 1; }
+.lutecia-blk-sum { color: var(--lt-muted); font-size: 13px; }
+.lutecia-wrap .lutecia-blk-head .lutecia-link { font-size: 12px; }
+.lutecia-blk[data-state="current"] { border-color: var(--lt-ink); }
+.lutecia-blk[data-state="current"] .lutecia-dot { background: var(--lt-stripe); box-shadow: 0 0 0 4px var(--lt-stripe-ring); }
+.lutecia-blk[data-state="done"] .lutecia-dot { background: var(--lt-ok-dot); box-shadow: 0 0 0 3px var(--lt-ok-ring); }
+.lutecia-wrap .lutecia-blk[data-state="later"] h3 { color: var(--lt-muted); }
+.lutecia-blk-content { margin-top: 14px; padding-left: 22px; }
+.lutecia-blk[data-state="later"] .lutecia-blk-content,
+.lutecia-blk[data-state="done"] .lutecia-blk-content { display: none; }
+
+/* --- Home ------------------------------------------------------------- */
+
+.lutecia-home { flex: 1; display: grid; grid-template-columns: 248px 1fr; }
+.lutecia-side { border-right: 1px solid var(--lt-line); padding: 36px 16px; background: var(--lt-panel); }
+.lutecia-side .lutecia-brand { margin-bottom: 24px; }
+.lutecia-nav { display: flex; flex-direction: column; gap: 2px; position: sticky; top: 48px; }
+.lutecia-wrap .lutecia-nav a { display: block; padding: 8px 10px; border-radius: 8px; color: var(--lt-muted); text-decoration: none; font-weight: 500; }
+.lutecia-wrap .lutecia-nav a.is-on { background: var(--lt-soft); color: var(--lt-ink); }
+.lutecia-main { padding: 36px 40px 40px; min-width: 0; }
+.lutecia-wrap .lutecia-topline h2 { line-height: 28px; }
+.lutecia-main > * { max-width: 920px; }
+.lutecia-main [tabindex="-1"]:focus { outline: none; }
+.lutecia-topline { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 22px; }
+.lutecia-wrap .lutecia-topline h2 { margin: 0; }
+.lutecia-wrap .lutecia-todo { margin-bottom: 28px; }
+.lutecia-wrap .lutecia-return { margin: 0 0 22px; font-size: 13px; }
+.lutecia-section { margin-bottom: 28px; scroll-margin-top: 48px; }
+.lutecia-wrap .lutecia-section h3 { font-size: 16px; margin-bottom: 10px; }
+.lutecia-wrap .lutecia-section > p { margin-top: 10px; }
+.lutecia-list { list-style: none; margin: 0; padding: 0; border: 1px solid var(--lt-line); border-radius: 12px; overflow: hidden; background: var(--lt-panel); }
+.lutecia-list > li { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; min-height: 48px; padding: 13px 16px; border-top: 1px solid var(--lt-line); gap: 12px; margin: 0; }
+.lutecia-list > li:first-child { border-top: 0; }
+.lutecia-list + .lutecia-list, .lutecia-refused { margin-top: 10px; }
+.lutecia-name { font-weight: 500; color: var(--lt-ink); }
+.lutecia-kvline { flex: 1; display: flex; gap: 14px; justify-content: flex-end; align-items: center; color: var(--lt-muted); font-size: 13px; line-height: 20px; }
+.lutecia-kvline > a, .lutecia-kvline > button { line-height: 20px; }
+.lutecia-row-details { min-width: 0; }
+.lutecia-mark { width: 16px; height: 16px; flex: none; margin-right: 2px; border-radius: 3px; }
+.lutecia-wrap .lutecia-unfold { display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 0; font: inherit; font-weight: 500; color: var(--lt-ink); cursor: pointer; text-align: left; }
+.lutecia-unfold::after { content: ""; width: 6px; height: 6px; border-right: 1.5px solid var(--lt-muted); border-bottom: 1.5px solid var(--lt-muted); transform: translateY(-2px) rotate(45deg); transition: transform 200ms ease; }
+.lutecia-row-details.is-open .lutecia-unfold::after { transform: translateY(1px) rotate(-135deg); }
+/* An open row aligns everything on its first line, not on the middle of the text. */
+.lutecia-list > li:has(.lutecia-row-details.is-open) { align-items: flex-start; }
+.lutecia-list > li:has(.lutecia-row-details.is-open) > .lutecia-dot { margin-top: 6px; }
+.lutecia-list > li:has(.lutecia-row-details.is-open) > .lutecia-kvline { margin-top: 1px; }
+.lutecia-list > li:has(.lutecia-row-details.is-open) > .lutecia-chip { margin-top: -2px; }
+.lutecia-wrap .lutecia-row-links a { color: var(--lt-ink); text-decoration-color: var(--lt-line); text-underline-offset: 3px; }
+.lutecia-row-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 220ms ease; }
+.lutecia-row-body > div { min-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: opacity 180ms ease, visibility 0s linear 220ms; }
+.lutecia-row-details.is-open .lutecia-row-body { grid-template-rows: 1fr; }
+.lutecia-row-details.is-open .lutecia-row-body > div { opacity: 1; visibility: visible; transition-delay: 0s; }
+@media (prefers-reduced-motion: reduce) { .lutecia-row-body, .lutecia-row-body > div, .lutecia-unfold::after { transition: none; } }
+.lutecia-wrap .lutecia-row-details p { margin-top: 6px; font-size: 13px; color: var(--lt-muted); max-width: 560px; }
+.lutecia-row-extra { flex-basis: 100%; }
+/* A program row's extra block only takes a line while its form is open. */
+[data-lutecia-access] > .lutecia-row-extra:not(:has([data-lutecia-access-form]:not([hidden]))) { display: none; }
+.lutecia-row-links a { margin-right: 14px; }
+.lutecia-access-form { margin-top: 4px; display: flex; flex-direction: column; gap: 8px; }
+.lutecia-wrap .lutecia-access-form textarea { width: 100%; font: 13px var(--lt-mono); border: 1px solid var(--lt-line); border-radius: 8px; padding: 8px 10px; background: var(--lt-panel); color: var(--lt-ink); }
+.lutecia-access-actions { display: flex; gap: 10px; }
+.lutecia-switch { width: 36px; height: 22px; border-radius: 999px; background: var(--lt-idle); position: relative; flex: none; border: 0; cursor: pointer; padding: 0; }
+.lutecia-switch[aria-checked="true"] { background: var(--lt-primary); }
+.lutecia-switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--lt-panel); transition: left 0.15s; }
+.lutecia-switch[aria-checked="true"]::after { left: 17px; background: var(--lt-primary-ink); }
+.lutecia-switch[disabled] { opacity: 0.5; cursor: default; }
+.lutecia-refusals li { font-size: 13px; }
+.lutecia-wrap .lutecia-footer-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 18px; }
+
+@media (max-width: 900px) {
+	.lutecia-setup, .lutecia-home { grid-template-columns: 1fr; }
+	.lutecia-rail, .lutecia-side { border-right: 0; border-bottom: 1px solid var(--lt-line); }
+	.lutecia-nav { position: static; flex-direction: row; flex-wrap: wrap; }
+	.lutecia-stage, .lutecia-main { padding: 28px 20px; }
+	.lutecia-welcome-body, .lutecia-welcome[data-lutecia-welcome="duplicate"] { padding: 48px 20px 24px; }
+	.lutecia-welcome-foot { padding: 12px 20px 24px; }
+}

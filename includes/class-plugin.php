@@ -21,6 +21,8 @@ final class Plugin {
 	public const OPT_CONNECTED_AT   = 'lutecia_connected_at';
 	/** Sales attribution opt-in. Off by default: no cookie, no conversion call. */
 	public const OPT_ATTRIBUTION    = 'lutecia_attribution_enabled';
+	/** Time write access was granted for the Stripe channel (its sales become orders). 0 or absent: not held. */
+	public const OPT_STRIPE_WRITE   = 'lutecia_stripe_write_since';
 
 	/** @var Plugin|null */
 	private static $instance = null;

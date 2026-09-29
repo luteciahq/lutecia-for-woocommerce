@@ -54,9 +54,12 @@ class Attribution {
 		$this->connection = $connection;
 	}
 
-	/** True when the merchant opted in to sales attribution. */
+	/**
+	 * Sales attribution is parked: no switch on the screen, so it is off for
+	 * every store, whatever an older version saved. Nothing is tracked.
+	 */
 	public static function is_enabled(): bool {
-		return '1' === (string) get_option( Plugin::OPT_ATTRIBUTION, '' );
+		return false;
 	}
 
 	public function register(): void {

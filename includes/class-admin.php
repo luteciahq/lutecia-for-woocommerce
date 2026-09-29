@@ -17,6 +17,21 @@ class Admin {
 
 	private const MENU_SLUG = 'lutecia';
 
+	/** Screen scripts, loaded in this order: each one reads what the ones before set up. */
+	private const SCRIPTS = array( 'core', 'stripe', 'setup', 'welcome', 'home', 'boot' );
+
+	/**
+	 * Stripe dashboard pages the screen links to, from Stripe's docs. Checked
+	 * by hand on a real account before every release (docs/canal-stripe.md).
+	 * Assistants: the agentic commerce page, where the merchant finishes
+	 * "Get started" and requests each agent. Activation: the account's
+	 * onboarding.
+	 */
+	public const STRIPE_ASSISTANTS_URL = 'https://dashboard.stripe.com/agentic-commerce';
+	public const STRIPE_ACTIVATION_URL = 'https://dashboard.stripe.com/account/onboarding';
+	/** Stripe's agentic commerce settings, where the merchant sets the pages buyers see at checkout. */
+	public const STRIPE_POLICIES_URL = 'https://dashboard.stripe.com/settings/agentic-commerce';
+
 	/** @var Connection */
 	private $connection;
 
@@ -59,52 +74,49 @@ class Admin {
 		}
 
 		wp_enqueue_style(
-			'lutecia-admin',
-			LUTECIA_WC_URL . 'assets/admin.css',
+			'lutecia-screen',
+			LUTECIA_WC_URL . 'assets/css/lutecia-screen.css',
 			array(),
-			LUTECIA_WC_VERSION
+			self::asset_version( 'assets/css/lutecia-screen.css' )
 		);
-		wp_enqueue_script(
-			'lutecia-admin',
-			LUTECIA_WC_URL . 'assets/admin.js',
-			array(),
-			LUTECIA_WC_VERSION,
-			true
-		);
+		$previous = array();
+		foreach ( self::SCRIPTS as $name ) {
+			$handle = 'lutecia-' . $name;
+			$file   = 'assets/js/' . $handle . '.js';
+			wp_enqueue_script( $handle, LUTECIA_WC_URL . $file, $previous, self::asset_version( $file ), true );
+			$previous = array( $handle );
+		}
 		wp_localize_script(
-			'lutecia-admin',
+			'lutecia-core',
 			'luteciaAdmin',
 			array(
-				'restUrl'   => esc_url_raw( rest_url( 'lutecia/v1/' ) ),
-				'restNonce' => wp_create_nonce( 'wp_rest' ),
-				'i18n'      => array(
-					'connecting'            => __( 'Connecting…', 'lutecia-for-woocommerce' ),
-					'activeNow'             => __( 'Address live', 'lutecia-for-woocommerce' ),
-					'checking'              => __( 'Checking…', 'lutecia-for-woocommerce' ),
-					/* translators: %s: number of products. */
-					'productsSynced'        => __( '%s products synced', 'lutecia-for-woocommerce' ),
-					'productSyncedOne'      => __( '1 product synced', 'lutecia-for-woocommerce' ),
-					'connect'               => __( 'Connect my store', 'lutecia-for-woocommerce' ),
-					'disconnected'          => __( 'Store disconnected.', 'lutecia-for-woocommerce' ),
-					'genericError'          => __( 'Something went wrong. Please try again.', 'lutecia-for-woocommerce' ),
-					'sessionExpired'        => __( 'Your session expired. Reload this page and try again.', 'lutecia-for-woocommerce' ),
-					/* translators: %s: date the access was received. */
-					'accessReceived'        => __( 'Access received on %s. We take it from here.', 'lutecia-for-woocommerce' ),
-					'accessReceivedNoDate'  => __( 'Access received. We take it from here.', 'lutecia-for-woocommerce' ),
-					'confirmRealtimeOff'    => __( 'Turn off Discovery? Your store stops answering AI assistants through Lutecia.', 'lutecia-for-woocommerce' ),
-					'confirmCheckoutOn'     => __( 'Turn on Checkout? This lets Lutecia create orders in your store.', 'lutecia-for-woocommerce' ),
-					'confirmDisconnect'     => __( 'Disconnect this store from AI shopping assistants?', 'lutecia-for-woocommerce' ),
-					'confirmReset'          => __( 'Forget the previous connection on this site and connect it as a new store?', 'lutecia-for-woocommerce' ),
-					/* translators: 1: number of products missing the field, 2: total number of products. */
-					'dataMissing'           => __( '%1$s of %2$s products missing it', 'lutecia-for-woocommerce' ),
-					/* translators: 1: number of products missing the field, 2: total number of products. */
-					'dataMissingOne'        => __( '%1$s of %2$s product missing it', 'lutecia-for-woocommerce' ),
-					/* translators: %s: total number of products. */
-					'dataCovered'           => __( 'All %s products have it', 'lutecia-for-woocommerce' ),
-					'dataCoveredOne'        => __( 'The product has it', 'lutecia-for-woocommerce' ),
+				'restUrl'       => esc_url_raw( rest_url( 'lutecia/v1/' ) ),
+				'restNonce'     => wp_create_nonce( 'wp_rest' ),
+				'storeCurrency' => function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : '',
+				'stripe'        => Stripe_Strings::all(),
+				'screen'        => Screen_Strings::all(),
+				'i18n'          => array(
+					'connecting'           => __( 'Connecting…', 'lutecia-for-woocommerce' ),
+					'connect'              => __( 'Connect my store', 'lutecia-for-woocommerce' ),
+					'genericError'         => __( 'Something went wrong. Please try again.', 'lutecia-for-woocommerce' ),
+					'sessionExpired'       => __( 'Your session expired. Reload this page and try again.', 'lutecia-for-woocommerce' ),
+					'confirmRealtimeOff'   => __( 'Turn off Discovery? Your store stops answering AI agents through Lutecia.', 'lutecia-for-woocommerce' ),
+					'confirmCheckoutOn'    => __( 'Turn on Checkout? This lets Lutecia create orders in your store.', 'lutecia-for-woocommerce' ),
+					'confirmDisconnect'    => __( 'Disconnect this store from AI agents?', 'lutecia-for-woocommerce' ),
+					'confirmReset'         => __( 'Forget the previous connection on this site and connect it as a new store?', 'lutecia-for-woocommerce' ),
+					'cancel'               => __( 'Cancel', 'lutecia-for-woocommerce' ),
+					'turnOn'               => __( 'Turn on', 'lutecia-for-woocommerce' ),
+					'turnOff'              => __( 'Turn off', 'lutecia-for-woocommerce' ),
+					'reconnect'            => __( 'Reconnect', 'lutecia-for-woocommerce' ),
 				),
 			)
 		);
+	}
+
+	/** The file's modification time as its version: a changed file is never served from the browser's cache. */
+	private static function asset_version( string $file ): string {
+		$mtime = @filemtime( LUTECIA_WC_DIR . $file );
+		return $mtime ? LUTECIA_WC_VERSION . '.' . $mtime : LUTECIA_WC_VERSION;
 	}
 
 	public function render_page(): void {

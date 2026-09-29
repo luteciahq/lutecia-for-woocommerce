@@ -19,6 +19,9 @@
  *   POST /api/plugin/disconnect      -> 200
  *   POST /api/plugin/settings        -> 200 {flags, catalog, channel_access, ...}
  *   POST /api/plugin/channel-access  -> 200 {ok, channel, received_at}
+ *   POST /api/plugin/stripe/connect-url -> 200 {url}
+ *   POST /api/plugin/stripe/disconnect  -> 200 {ok, released}
+ *   POST /api/plugin/stripe/retry-import -> 200 {ok} | 409 {detail} (not started: pending, just refused, or not connected)
  *
  * @package Lutecia\WC
  */
@@ -29,7 +32,10 @@ defined( 'ABSPATH' ) || exit;
 
 class Connection {
 
-	private const KEY_DESCRIPTION = 'Lutecia (AI shopping assistants), created by the Lutecia plugin';
+	private const KEY_DESCRIPTION = 'Lutecia (AI agents), created by the Lutecia plugin';
+
+	/** The only page the plugin sends the browser to for Stripe. */
+	public const STRIPE_AUTHORIZE_PREFIX = 'https://connect.stripe.com/oauth/authorize?';
 
 	public const OPT_TERMS_ACCEPTED = 'lutecia_terms_accepted';
 
@@ -185,9 +191,11 @@ class Connection {
 		delete_option( Plugin::OPT_CONNECTED_AT );
 		// Attribution is an opt-in per connection: a reconnect starts off again.
 		delete_option( Plugin::OPT_ATTRIBUTION );
+		delete_option( Plugin::OPT_STRIPE_WRITE );
 		delete_option( Site_Guard::OPT_SITE_URL );
 		delete_option( Site_Guard::OPT_SITE_ENV );
 		delete_option( self::OPT_TERMS_ACCEPTED );
+		Wizard::forget();
 		Discovery::flush_cache();
 
 		return true;
@@ -321,7 +329,7 @@ class Connection {
 	 * (feed credentials, Merchant Center id...). Returns the hub response
 	 * ({ok, channel, received_at}) or a WP_Error.
 	 *
-	 * @param string $channel One of chatgpt|google|microsoft|perplexity.
+	 * @param string $channel One of chatgpt|google|microsoft|perplexity|stripe_acs_hooks.
 	 * @param string $access  The access blob to forward, stored encrypted hub-side.
 	 * @return array|\WP_Error
 	 */
@@ -359,6 +367,141 @@ class Connection {
 			return new \WP_Error( 'lutecia_channel_access', $message );
 		}
 		return $data;
+	}
+
+	/**
+	 * Signed POST to a hub plugin route. Returns [HTTP status, decoded body]
+	 * or a WP_Error when the hub cannot be reached.
+	 *
+	 * @param string $path    Route under LUTECIA_WC_HUB_URL, starting with a slash.
+	 * @param array  $payload Fields sent besides client_id and site_url.
+	 * @return array|\WP_Error
+	 */
+	private function signed_post( string $path, array $payload ) {
+		if ( Site_Guard::in_duplicate_mode() ) {
+			return new \WP_Error( 'lutecia_duplicate_site', __( 'This site is a copy of a connected store. Nothing is sent from a copy.', 'lutecia-for-woocommerce' ) );
+		}
+		$secret = (string) get_option( Plugin::OPT_WEBHOOK_SECRET, '' );
+		$body   = wp_json_encode(
+			array_merge(
+				array(
+					'client_id' => $this->client_id(),
+					'site_url'  => get_option( 'home' ),
+				),
+				$payload
+			)
+		);
+
+		$response = wp_remote_post(
+			LUTECIA_WC_HUB_URL . $path,
+			array(
+				'timeout' => 15,
+				'headers' => array(
+					'Content-Type'        => 'application/json',
+					'X-Lutecia-Signature' => hash_hmac( 'sha256', $body, $secret ),
+				),
+				'body'    => $body,
+			)
+		);
+		if ( is_wp_error( $response ) ) {
+			return new \WP_Error( 'lutecia_network', __( 'Could not reach the Lutecia service.', 'lutecia-for-woocommerce' ) );
+		}
+		$data = json_decode( wp_remote_retrieve_body( $response ), true );
+		return array( (int) wp_remote_retrieve_response_code( $response ), is_array( $data ) ? $data : array() );
+	}
+
+	/**
+	 * Asks the hub for the Stripe page where the merchant connects an account.
+	 * Only a URL on Stripe's authorize page is ever returned.
+	 *
+	 * @param string $return_url The plugin page Stripe sends the merchant back to.
+	 * @return string|\WP_Error
+	 */
+	public function hub_stripe_connect_url( string $return_url ) {
+		$result = $this->signed_post( '/api/plugin/stripe/connect-url', array( 'return_url' => $return_url ) );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+		$url = isset( $result[1]['url'] ) ? (string) $result[1]['url'] : '';
+		if ( 200 !== $result[0] || 0 !== strpos( $url, self::STRIPE_AUTHORIZE_PREFIX ) ) {
+			return new \WP_Error( 'lutecia_stripe_connect', Stripe_Strings::get( 'error_unavailable' ) );
+		}
+		return $url;
+	}
+
+	/**
+	 * Turns the Stripe channel off on the hub.
+	 *
+	 * @return true|\WP_Error
+	 */
+	public function hub_stripe_disconnect() {
+		$result = $this->signed_post( '/api/plugin/stripe/disconnect', array() );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+		if ( 200 !== $result[0] ) {
+			return new \WP_Error( 'lutecia_stripe_disconnect', __( 'Something went wrong. Please try again.', 'lutecia-for-woocommerce' ) );
+		}
+		return true;
+	}
+
+	/**
+	 * Asks the hub to send the catalog to Stripe again. A 409 means nothing
+	 * was started (an import still waits for Stripe, Stripe refused one a
+	 * moment ago, or Stripe is not connected): it comes back as an error
+	 * worded by this plugin from the hub's code, never as a success.
+	 *
+	 * @return true|\WP_Error Error code lutecia_stripe_retry_waiting on a 409.
+	 */
+	public function hub_stripe_retry_import() {
+		$result = $this->signed_post( '/api/plugin/stripe/retry-import', array() );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+		if ( 409 === $result[0] ) {
+			// The hub answers {code, message}: the code picks this plugin's own sentence.
+			$detail = isset( $result[1]['detail'] ) ? $result[1]['detail'] : array();
+			$code   = is_array( $detail ) && ! empty( $detail['code'] ) ? sanitize_key( (string) $detail['code'] ) : '';
+			$text   = Stripe_Strings::get( 'retry_' . $code );
+			if ( '' === $text ) {
+				$text = __( 'Something went wrong. Please try again.', 'lutecia-for-woocommerce' );
+			}
+			return new \WP_Error( 'lutecia_stripe_retry_waiting', $text );
+		}
+		if ( 200 !== $result[0] ) {
+			return new \WP_Error( 'lutecia_stripe_retry', __( 'Something went wrong. Please try again.', 'lutecia-for-woocommerce' ) );
+		}
+		return true;
+	}
+
+	/** Time write access was granted for the Stripe channel, 0 when not held. */
+	public function stripe_write_since(): int {
+		return (int) get_option( Plugin::OPT_STRIPE_WRITE, 0 );
+	}
+
+	/**
+	 * Gives the key write access for the Stripe channel: its sales become
+	 * orders in this store. The merchant confirmed it on the screen.
+	 */
+	public function grant_stripe_write(): bool {
+		if ( ! $this->set_key_permissions( 'read_write' ) ) {
+			return false;
+		}
+		update_option( Plugin::OPT_STRIPE_WRITE, time(), false );
+		return true;
+	}
+
+	/**
+	 * Stops holding write access for the Stripe channel. The key goes back to
+	 * read only unless Checkout still needs write access.
+	 *
+	 * @param bool $checkout_on Whether Checkout is on (or unknown, which counts as on).
+	 */
+	public function release_stripe_write( bool $checkout_on ): void {
+		delete_option( Plugin::OPT_STRIPE_WRITE );
+		if ( ! $checkout_on ) {
+			$this->set_key_permissions( 'read' );
+		}
 	}
 
 	public function revoke_wc_api_key(): void {

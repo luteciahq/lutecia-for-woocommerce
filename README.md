@@ -1,4 +1,4 @@
-# Lutecia: UCP for WooCommerce
+# Lutecia: Agentic Commerce for WooCommerce
 
 WooCommerce plugin that connects a store to [Lutecia](https://lutecia.app), end-to-end agentic commerce infrastructure for online stores: catalog, cart, checkout and order tracking for AI agents, over [UCP](https://ucp.dev) (Universal Commerce Protocol). This is the source of the plugin published on [wordpress.org](https://wordpress.org/plugins/lutecia-for-woocommerce/).
 
